@@ -1,0 +1,58 @@
+# ============================================
+# YAQIZ Platform - Docker Compose
+# ============================================
+version: "3.8"
+
+services:
+  # ── Backend (FastAPI) ──────────────────────
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: yaqiz-backend
+    restart: unless-stopped
+    env_file:
+      - ./backend/.env
+    environment:
+      - DATABASE_URL=sqlite:///./yaqiz.db
+      - YOLO_WEIGHTS_PATH=/app/weights/ppe.pt
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./YOLO-Weights:/app/weights:ro
+      - ./detection_model:/app/detection_model:ro
+      - backend_uploads:/app/uploads
+      - backend_results:/app/results
+      - backend_db:/app/data
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - yaqiz-network
+
+  # ── Frontend (React + Nginx) ───────────────
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: yaqiz-frontend
+    restart: unless-stopped
+    ports:
+      - "3000:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - yaqiz-network
+
+volumes:
+  backend_uploads:
+  backend_results:
+  backend_db:
+
+networks:
+  yaqiz-network:
+    driver: bridge

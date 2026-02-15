@@ -1,0 +1,116 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply transition-colors duration-150;
+  }
+
+  body {
+    @apply bg-yaqiz-bg text-white font-sans antialiased;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: #0a0a0f;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #1e1e2e;
+    border-radius: 3px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #2e2e3e;
+  }
+
+  /* Smoother focus for accessibility */
+  :focus-visible {
+    @apply outline-none ring-2 ring-yaqiz-accent/50 ring-offset-2 ring-offset-yaqiz-bg;
+    border-radius: 8px;
+  }
+}
+
+@layer components {
+  .glass-card {
+    @apply bg-yaqiz-card border border-yaqiz-border rounded-2xl
+           shadow-[0_1px_3px_rgba(0,0,0,0.4)]
+           transition-all duration-300 ease-out;
+  }
+
+  .glass-card:hover {
+    @apply border-yaqiz-border shadow-[0_4px_24px_rgba(0,0,0,0.5)];
+  }
+
+  .glow-accent {
+    box-shadow: 0 0 15px rgba(0, 212, 255, 0.15);
+  }
+
+  .btn-primary {
+    @apply bg-gradient-to-r from-yaqiz-accent to-yaqiz-accent2 text-white font-semibold 
+           py-2.5 px-6 rounded-xl transition-all duration-300 ease-out
+           hover:shadow-lg hover:shadow-yaqiz-accent/25 hover:-translate-y-0.5 hover:brightness-110
+           active:translate-y-0 active:brightness-95
+           disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:translate-y-0
+           disabled:hover:shadow-none disabled:hover:brightness-100;
+  }
+
+  .btn-ghost {
+    @apply text-yaqiz-muted hover:text-white hover:bg-white/5 
+           py-2 px-4 rounded-lg transition-all duration-200;
+  }
+
+  .input-field {
+    @apply w-full bg-yaqiz-bg border border-yaqiz-border rounded-xl px-4 py-3
+           text-white placeholder-yaqiz-muted/50
+           focus:outline-none focus:border-yaqiz-accent focus:ring-2 focus:ring-yaqiz-accent/20
+           focus:shadow-[0_0_0_3px_rgba(0,212,255,0.08)]
+           hover:border-yaqiz-muted/40
+           transition-all duration-200;
+  }
+
+  .stat-card {
+    @apply glass-card p-6 hover:border-yaqiz-accent/20 
+           hover:shadow-[0_4px_20px_rgba(0,212,255,0.06)]
+           transition-all duration-300;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold
+           transition-all duration-200;
+  }
+
+  .badge-success {
+    @apply badge bg-yaqiz-success/15 text-yaqiz-success border border-yaqiz-success/20;
+  }
+
+  .badge-danger {
+    @apply badge bg-yaqiz-danger/15 text-yaqiz-danger border border-yaqiz-danger/20;
+  }
+
+  .badge-warning {
+    @apply badge bg-yaqiz-warning/15 text-yaqiz-warning border border-yaqiz-warning/20;
+  }
+}
+
+/* ── Page transition animations ─────────────────────── */
+@layer utilities {
+  .animate-page-in {
+    animation: pageIn 0.35s ease-out both;
+  }
+}
+
+@keyframes pageIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
