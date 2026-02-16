@@ -10,9 +10,15 @@ Performance: Optimized for real-time processing with O(1) lookups and O(n) minim
 import cv2
 import mediapipe as mp
 import numpy as np
-import winsound
 import time
 import math
+
+# winsound is Windows-only; provide a no-op fallback on other platforms
+try:
+    import winsound
+    _HAS_WINSOUND = True
+except ImportError:
+    _HAS_WINSOUND = False
 from collections import deque
 from datetime import datetime
 from dataclasses import dataclass
@@ -274,6 +280,8 @@ class AlarmService:
         self._initialized = True
     
     def play(self, frequency: int, duration_ms: int) -> None:
+        if not _HAS_WINSOUND:
+            return
         try:
             winsound.Beep(frequency, duration_ms)
         except Exception as e:
@@ -282,6 +290,9 @@ class AlarmService:
     def start_continuous_head_down_alarm(self, current_time: float) -> None:
         self.head_down_alarm_active = True
         if current_time - self.last_head_down_beep_time >= self.head_down_beep_interval:
+            if not _HAS_WINSOUND:
+                self.last_head_down_beep_time = current_time
+                return
             try:
                 winsound.Beep(2800, 400)
                 self.last_head_down_beep_time = current_time
