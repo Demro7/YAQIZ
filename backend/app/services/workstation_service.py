@@ -18,10 +18,17 @@ import numpy as np
 
 logger = logging.getLogger("yaqiz.workstation.service")
 
-# Make detection_model importable (it lives at repo root)
-_REPO_ROOT = Path(__file__).resolve().parent.parent.parent.parent
-if str(_REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(_REPO_ROOT))
+# Make detection_model importable
+# In local dev:  backend/app/services/ → 4 parents up → repo root
+# In Docker:     /app/app/services/    → 3 parents up → /app (where detection_model is mounted)
+_SERVICE_DIR = Path(__file__).resolve().parent
+for _depth in (3, 4):  # Try Docker path first, then local dev path
+    _candidate = _SERVICE_DIR
+    for _ in range(_depth):
+        _candidate = _candidate.parent
+    if (_candidate / "detection_model").is_dir() and str(_candidate) not in sys.path:
+        sys.path.insert(0, str(_candidate))
+        break
 
 
 class WorkstationService:
