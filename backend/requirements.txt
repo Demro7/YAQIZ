@@ -18,7 +18,8 @@ Pillow>=10.0.0
 
 # Workstation Monitoring (MediaPipe)
 mediapipe>=0.10.9
-pynput>=1.7.6
+# pynput requires evdev on Linux - install only on desktop environments
+# pynput>=1.7.6
 
 # Utilities
 python-dotenv>=1.0.0

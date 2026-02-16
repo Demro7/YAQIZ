@@ -8,7 +8,13 @@ import time
 from collections import deque
 from typing import Deque, Dict
 
-from pynput import keyboard, mouse
+try:
+    from pynput import keyboard, mouse
+    PYNPUT_AVAILABLE = True
+except ImportError:
+    PYNPUT_AVAILABLE = False
+    keyboard = None
+    mouse = None
 
 # Global variables to ensure hooks remain active outside class scope
 _mouse_listener = None
@@ -46,6 +52,9 @@ class SystemActivityTracker:
 
     def _start_listeners(self):
         global _mouse_listener, _keyboard_listener
+        
+        if not PYNPUT_AVAILABLE:
+            return
         
         # Stop if already running to prevent duplicates
         if _mouse_listener and _mouse_listener.running:
