@@ -42,6 +42,9 @@ services:
     restart: unless-stopped
     ports:
       - "3000:80"
+      - "443:443"
+    volumes:
+      - /etc/nginx/ssl:/etc/nginx/ssl:ro
     depends_on:
       backend:
         condition: service_healthy
