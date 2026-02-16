@@ -28,7 +28,14 @@ from .activity_tracker import SystemActivityTracker
 _USE_TASKS_API = not hasattr(mp, 'solutions')
 
 if _USE_TASKS_API:
-    _MODELS_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), '.models')
+    # Use a writable cache dir; fall back to .models beside this file (local dev)
+    _MODELS_DIR = os.environ.get(
+        'MEDIAPIPE_MODELS_DIR',
+        os.path.join(os.path.dirname(os.path.abspath(__file__)), '.models'),
+    )
+    # In Docker the detection_model volume may be read-only; use /tmp instead
+    if not os.access(os.path.dirname(os.path.abspath(__file__)), os.W_OK):
+        _MODELS_DIR = os.path.join('/tmp', 'mediapipe_models')
     _FACE_MODEL_PATH = os.path.join(_MODELS_DIR, 'face_landmarker.task')
     _HAND_MODEL_PATH = os.path.join(_MODELS_DIR, 'hand_landmarker.task')
     _FACE_MODEL_URL = (
